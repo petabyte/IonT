@@ -1,0 +1,5 @@
+{
+"message_type": "events_message",
+"message": "{\"themessage\":\"sample message\"}",
+"product": "the_product"
+}

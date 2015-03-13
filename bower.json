@@ -1,0 +1,28 @@
+{
+  "name": "IonT",
+  "version": "1.0.0",
+  "authors": [
+    "George Sanchez <petabyte.gs@gmail.com>"
+  ],
+  "description": "Node server for consuming HiveMQ messages and indexing it in Elasticsearch",
+  "main": "server.js",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "IonT",
+    "HiveMq",
+    "IOT",
+    "George",
+    "Sanchez"
+  ],
+  "license": "MIT",
+  "homepage": "http://petabyte.github.io",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

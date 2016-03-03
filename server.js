@@ -2,6 +2,8 @@
 var mqtt = require("mqtt");
 var moment = require("moment");
 var elasticsearch = require('elasticsearch');
+var express = require('express');
+var app = express();
  
 //Create our elasticsearch Client
 var elasticSearchClient = new elasticsearch.Client({
@@ -40,6 +42,44 @@ mqClient.on('message',  function (topic, queueMessage) {
      	 	console.log("This is the response " + error + " " +response);
      	});
  });
+
+
+//Server API code
+var router = express.Router();
+app.use('/api',router);
+var indexVar = "iot_events";
+var typeVar = "events_messages";
+var queryObjVar = {"size":10000,"query": {"range":{"postDate":{"gt":"now-1d/d","lt":"now"}}}};
+
+
+router.get('/status', function(req, res){
+    var processHits = function(body){
+       var total = 0;
+       var hits = body.hits.hits;
+       for (var index in hits) {
+           var floatValue = parseFloat(hits[index]._source.value)
+           total += floatValue;
+       }
+       //10 minutes practice should be good
+       var totalMinutes = ((total / 1000000)/60);
+       console.log("Total " + totalMinutes);
+       if(totalMinutes >= 10){
+          console.log("Good!");
+         res.json({message:"good"});
+       }else{
+          console.log("Bad!");
+          res.json({message:"bad"});
+       }
+    };
+    var processError = function (error) {
+         console.trace(error.message);
+    };
+    elasticSearchClient.search({index:indexVar, type:typeVar, body:queryObjVar})
+    .then(processHits, processError);
+
+
+});
+app.listen(3000);
 
 // For logging purpose....
 console.log( "Server is running....." );

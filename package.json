@@ -1,12 +1,12 @@
 {
   "name": "IonT",
   "version": "1.0.0",
-  "description": "Node server to consume HiveMQ messages and index it in elasticsearch",
+  "description": "Node server to consume MQTT messages and index it in elasticsearch",
   "main": "server.js",
   "keywords": [
     "IonT",
     "Node",
-    "HiveMq",
+    "MQTT",
     "George",
     "Sanchez"
   ],
@@ -14,6 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "elasticsearch": "^10.1.3",
+    "express": "^4.13.4",
     "forever": "^0.15.1",
     "moment": "^2.11.2",
     "mqtt": "*"

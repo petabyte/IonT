@@ -6,7 +6,7 @@ var schedule = require('node-schedule');
  
 //Create our elasticsearch Client
 var elasticSearchClient = new elasticsearch.Client({
-  host: '172.31.19.77:9200',
+  host: 'ElasticBalancer-107991934.us-west-2.elb.amazonaws.com:9200',
   log: 'trace'
 });
 

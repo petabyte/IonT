@@ -6,3 +6,4 @@ start \
 -ao out.log \
 -ae err.log \
 server.js
+exit 0

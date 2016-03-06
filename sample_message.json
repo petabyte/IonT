@@ -6,3 +6,5 @@
   "value":"34.4",
   "postDate":"2006-02-06T20:35:01-0600"
 }
+
+{"type":"mic_sensor","message":"duration_log","product":"music_teacher","value":"600000000"}

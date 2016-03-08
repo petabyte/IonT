@@ -7,7 +7,8 @@ using namespace RGBControls;
 
 // Define hardware connections
 int PIN_GATE_IN = D3;
-int IRQ_GATE_IN = D0;
+int PIN_LED_OUT = D7;
+int IRQ_GATE_IN = RX;
 int PIN_ANALOG_IN = A0;
 
 Led led(D0, D1, D2);
@@ -15,33 +16,32 @@ Color red(255, 0, 0);
 Color green(0, 255, 0);
 Color yellow(255, 255, 0);
 Color white(255, 255, 255);
+Color purple(155, 0, 155);
 
 void callback(char* topic, byte* payload, unsigned int length);
 MQTT client("52.34.171.0", 1883, callback);
 
-//Green
-void showGreen(){
-    led.setColor(green);
-    delay(1000);
-}
-
-//yellow
-void showYellow(){
-    led.setColor(yellow);
-    delay(1000);
-}
-
-//red
-void showRed(){
+//Show Color
+void showRedColor(){
     led.setColor(red);
     delay(1000);
 }
 
-//white
-void showWhite(){
+void showGreenColor(){
+    led.setColor(green);
+    delay(1000);
+}
+
+void showYellowColor(){
+    led.setColor(yellow);
+    delay(1000);
+}
+
+void showWhiteColor(){
     led.setColor(white);
     delay(1000);
 }
+
 
 void debug(String message, int value) {
     char msg [50];
@@ -59,17 +59,13 @@ void callback(char* topic, byte* payload, unsigned int length) {
     debug(message, 1);    
     
     if(message.equals("red")){
-        debug("calling red", 1);  
-        showRed();
+        showRedColor();
     } else if(message.equals("yellow")){
-        debug("calling yellow", 1);
-        showYellow();
+       showYellowColor();
     } else if(message.equals("green")){
-        debug("calling green", 1);
-        showGreen();
+        showGreenColor();
     } else {
-        debug("calling white", 1);
-        showWhite();
+        showWhiteColor();
     }
     delay(1000);
 }
@@ -85,14 +81,16 @@ void soundISR()
 {
   int pin_val;
   pin_val = digitalRead(PIN_GATE_IN);
+  digitalWrite(PIN_LED_OUT, pin_val);  
 }
 
 void setup()
 {
   // configure input to interrupt
   pinMode(PIN_GATE_IN, INPUT);
+  pinMode(PIN_LED_OUT, OUTPUT);
   attachInterrupt(IRQ_GATE_IN, soundISR, CHANGE);
-  showWhite();
+  showWhiteColor();
   client.connect("sparkclient");
   if(client.isConnected()){
      client.subscribe("practice_status");
@@ -101,16 +99,19 @@ void setup()
 
 void loop()
 {
-  int value;
-  long duration;
-  // Check the envelope input
-  duration = 0;
-  value = analogRead(PIN_ANALOG_IN);
-  duration = pulseIn(PIN_GATE_IN, HIGH);
+
+  //MQTT
   if(client.isConnected()){
         client.loop();
-  }
-
+   }
+    
+  int value = 0;
+  long duration = 0;
+  
+  // Check the envelope input
+  duration = pulseIn(PIN_GATE_IN, HIGH);
+  value = analogRead(PIN_ANALOG_IN);
+     
   // Convert envelope value into a message
   if(duration > 0){
     char message [255];

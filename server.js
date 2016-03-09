@@ -53,25 +53,40 @@ var queryObjVar = {"size":10000,"query": {"range":{"postDate":{"gt":"now-1d/d","
 var jobSchedule = '/20 * * * * *';
 
 var processHits = function(body){
-   var total = 0;
+   var pulseDuration = 0;
    var hits = body.hits.hits;
    for (var index in hits) {
        var floatValue = parseFloat(hits[index]._source.value)
-       total += floatValue;
+       pulseDuration += floatValue;
    }
+
+   var startTime = moment(hits[0]._source.postDate);
+   var endTime = moment(hits[hits.length-1]._source.postDate);
+   var duration = moment.duration(endTime.diff(startTime));
+   var durationInMinutes = duration.asMinutes();
    //10 minutes practice should be good
-   var totalMinutes = ((total / 1000000)/60);
-   console.log("Total " + totalMinutes);
-   if(totalMinutes >= 10){
-      console.log("Good!");
-      mqClient.publish('practice_status', 'green');
-   } else if (totalMinutes >= 5 && totalMinutes <= 9){
-    console.log("Not so bad!");
-      mqClient.publish('practice_status', 'yellow');
+   var pulseDurationInMinutes = ((pulseDuration / 1000000)/60);
+
+   //Calculate Timing Calibration with Factor for correction
+   // 10 as the factor of correction based on testing 
+   console.log("Actual Duration " + durationInMinutes);
+   console.log("Pulse Duration " + pulseDurationInMinutes);
+  if(pulseDurationInMinutes >= 1 ){
+      if(durationInMinutes >= 10){
+        console.log("Good!");
+        mqClient.publish('practice_status', 'green');
+      } else if (durationInMinutes >= 5 && durationInMinutes <= 9){
+        console.log("Not so bad!"); 
+        mqClient.publish('practice_status', 'yellow');
+      } else {
+        console.log("Bad!");
+        mqClient.publish('practice_status', 'red');
+      }
    } else {
-    console.log("Bad!");
-      mqClient.publish('practice_status', 'red');
+         console.log("Precision Error!");
+        mqClient.publish('practice_status', 'red');
    }
+ 
 };
 
 var processError = function (error) {

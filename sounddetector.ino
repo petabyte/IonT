@@ -16,32 +16,16 @@ Color red(255, 0, 0);
 Color green(0, 255, 0);
 Color yellow(255, 255, 0);
 Color white(255, 255, 255);
-Color purple(155, 0, 155);
+Color currentColor(0, 0, 0);
 
 void callback(char* topic, byte* payload, unsigned int length);
 MQTT client("52.34.171.0", 1883, callback);
 
 //Show Color
-void showRedColor(){
-    led.setColor(red);
+void showColor(){
+    led.setColor(currentColor);
     delay(1000);
 }
-
-void showGreenColor(){
-    led.setColor(green);
-    delay(1000);
-}
-
-void showYellowColor(){
-    led.setColor(yellow);
-    delay(1000);
-}
-
-void showWhiteColor(){
-    led.setColor(white);
-    delay(1000);
-}
-
 
 void debug(String message, int value) {
     char msg [50];
@@ -59,14 +43,15 @@ void callback(char* topic, byte* payload, unsigned int length) {
     debug(message, 1);    
     
     if(message.equals("red")){
-        showRedColor();
+        currentColor = red;
     } else if(message.equals("yellow")){
-       showYellowColor();
+       currentColor = yellow;
     } else if(message.equals("green")){
-        showGreenColor();
+        currentColor = green;
     } else {
-        showWhiteColor();
+        currentColor = white;
     }
+    showColor();
     delay(1000);
 }
 
@@ -90,7 +75,8 @@ void setup()
   pinMode(PIN_GATE_IN, INPUT);
   pinMode(PIN_LED_OUT, OUTPUT);
   attachInterrupt(IRQ_GATE_IN, soundISR, CHANGE);
-  showWhiteColor();
+  currentColor = white;
+  showColor();
   client.connect("sparkclient");
   if(client.isConnected()){
      client.subscribe("practice_status");

@@ -21,18 +21,35 @@ Color currentColor(0, 0, 0);
 void callback(char* topic, byte* payload, unsigned int length);
 MQTT client("52.34.171.0", 1883, callback);
 
+void debug(String message, int value) {
+    char msg [100];
+    sprintf(msg,message.c_str(), value);
+    Spark.publish("DEBUG", msg);
+}
+ 
+
+// for QoS2 MQTTPUBREL message.
+// this messageid maybe have store list or array structure.
+uint16_t qos2messageid = 0;
+
+// QOS ack callback.
+// MQTT server sendback message id ack, if use QOS1 or QOS2.
+void qoscallback(unsigned int messageid) {
+    debug("Ack Message Id:%d", messageid);
+
+    if (messageid == qos2messageid) {
+         debug("Release QoS2 Message:%d", messageid);
+        client.publishRelease(qos2messageid);
+    }
+}
+
 //Show Color
 void showColor(){
     led.setColor(currentColor);
     delay(1000);
 }
 
-void debug(String message, int value) {
-    char msg [50];
-    sprintf(msg, message.c_str(), value);
-    Spark.publish("DEBUG", msg);
-}
- 
+
 
 //Receive messages from MQ
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -78,6 +95,8 @@ void setup()
   currentColor = white;
   showColor();
   client.connect("sparkclient");
+  // add qos callback
+  client.addQosCallback(qoscallback);
   if(client.isConnected()){
      client.subscribe("practice_status");
   }
@@ -103,8 +122,11 @@ void loop()
     char message [255];
    snprintf(message, sizeof(message),"{\"type\":\"mic_sensor\",\"message\":\"duration_log\",\"product\":\"music_teacher\",\"value\":\"%d\"}",duration);
    if(client.isConnected()){
+       uint16_t messageid;
        debug("duration=>%d", duration); 
-       client.publish("events_messages",message);
+       client.publish("events_messages",message, MQTT::QOS2, &messageid);
+        // save QoS2 message id.
+        qos2messageid = messageid;
    }
   }
   // pause for 1 second

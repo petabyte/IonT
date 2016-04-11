@@ -75,7 +75,7 @@ var processHits = function(body){
       if(durationInMinutes >= 10){
         console.log("Good!");
         mqClient.publish('practice_status', 'green');
-      } else if (durationInMinutes >= 5 && durationInMinutes <= 9){
+      } else if (durationInMinutes >= 5 && durationInMinutes <= 9.99){
         console.log("Not so bad!"); 
         mqClient.publish('practice_status', 'yellow');
       } else {

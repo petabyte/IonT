@@ -111,6 +111,7 @@ void loop()
    if(client.isConnected()){
        debug("duration=>%d", duration); 
        client.publish("events_messages",message);
+       delay(1000);
    }
   }
   // pause for 1 second

@@ -71,7 +71,7 @@ var processHits = function(body){
    // 10 as the factor of correction based on testing 
    console.log("Actual Duration " + durationInMinutes);
    console.log("Pulse Duration " + pulseDurationInMinutes);
-  if(pulseDurationInMinutes >= 1 ){
+  if(pulseDurationInMinutes >= 0.5 && pulseDurationInMinutes <= 1 ){
       if(durationInMinutes >= 10){
         console.log("Good!");
         mqClient.publish('practice_status', 'green');

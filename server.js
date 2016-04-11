@@ -65,7 +65,7 @@ var processHits = function(body){
    var duration = moment.duration(endTime.diff(startTime));
    var durationInMinutes = duration.asMinutes();
    //10 minutes practice should be good
-   var pulseDurationInMinutes = ((pulseDuration / 1000000)/60);
+   var pulseDurationInMinutes = ((pulseDuration / 100000)/60);
 
    //Calculate Timing Calibration with Factor for correction
    // 10 as the factor of correction based on testing 

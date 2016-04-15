@@ -16,6 +16,7 @@ Color red(255, 0, 0);
 Color green(0, 255, 0);
 Color yellow(255, 255, 0);
 Color white(255, 255, 255);
+Color none(0, 0, 0);
 Color currentColor(0, 0, 0);
 
 void callback(char* topic, byte* payload, unsigned int length);
@@ -71,18 +72,20 @@ void soundISR()
 {
   int pin_val;
   pin_val = digitalRead(PIN_GATE_IN);
-  digitalWrite(PIN_LED_OUT, pin_val);  
+  digitalWrite(PIN_LED_OUT, pin_val);
 }
+
+
 
 void setup()
 {
   // configure input to interrupt
   pinMode(PIN_GATE_IN, INPUT);
   pinMode(PIN_LED_OUT, OUTPUT);
-  attachInterrupt(IRQ_GATE_IN, soundISR, CHANGE);
+  attachInterrupt(PIN_GATE_IN, soundISR, CHANGE);
   currentColor = white;
   showColor();
-  client.connect("sparkclient");
+  client.connect("music_teacher");
   if(client.isConnected()){
      client.subscribe("practice_status");
   }

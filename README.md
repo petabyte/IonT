@@ -4,6 +4,7 @@
 > [petabyte.github.io/IonT](https://petabyte.github.io/IonT/)
 >
 SEIS - 785 IOT Project
+>
 Create an Internet of things device that will log and monitor music practice
 Use a microphone sensor to log sound coming from instrument and create a telemetry log of how long it has been playing
 Must recognize sound signature for each instrument

@@ -27,8 +27,13 @@ void debug(String message, int value) {
     sprintf(msg,message.c_str(), value);
     Spark.publish("DEBUG", msg);
 }
- 
 
+//Publish Message 
+void publishMessage(long value){
+   char message [255];
+   snprintf(message, sizeof(message),"{\"type\":\"mic_sensor\",\"message\":\"duration_log\",\"product\":\"music_teacher\",\"value\":\"%d\"}",value);
+   client.publish("events_messages",message);
+} 
 
 
 
@@ -98,7 +103,6 @@ void loop()
   if(client.isConnected()){
         client.loop();
   }
-
   
   int value = 0;
   long duration = 0;
@@ -109,11 +113,9 @@ void loop()
      
   // Convert envelope value into a message
   if(duration > 0){
-    char message [255];
-   snprintf(message, sizeof(message),"{\"type\":\"mic_sensor\",\"message\":\"duration_log\",\"product\":\"music_teacher\",\"value\":\"%d\"}",duration);
    if(client.isConnected()){
        debug("duration=>%d", duration); 
-       client.publish("events_messages",message);
+       publishMessage(duration);
        delay(1000);
    }
   }

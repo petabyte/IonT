@@ -25,7 +25,7 @@ MQTT client("52.34.171.0", 1883, callback);
 void debug(String message, int value) {
     char msg [100];
     sprintf(msg,message.c_str(), value);
-    Spark.publish("DEBUG", msg);
+    Spark.publish("INFO", msg);
 }
 
 //Publish Message 
@@ -114,7 +114,7 @@ void loop()
   // Convert envelope value into a message
   if(duration > 0){
    if(client.isConnected()){
-       debug("duration=>%d", duration); 
+       debug("%d", duration); 
        publishMessage(duration);
        delay(1000);
    }
